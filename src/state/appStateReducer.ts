@@ -50,6 +50,32 @@ export const appStateReducer = (
       draft.lists = moveItem(draft.lists, dragIndex, hoverIndex)
       break
     }
+    case "MOVE_TASK": {
+      const {
+        draggedItemId,
+        hoveredItemId,
+        sourceColumnId,
+        targetColumnId
+      } = action.payload
+      const sourceListIndex = findItemIndexById(draft.lists, sourceColumnId)
+      const targetListIndex = findItemIndexById(draft.lists, targetColumnId)
+      const dragIndex = findItemIndexById(
+        draft.lists[sourceListIndex].tasks,
+        draggedItemId
+      )
+      const hoverIndex = hoveredItemId
+        ? findItemIndexById(draft.lists[targetListIndex].tasks, hoveredItemId)
+        : 0
+
+      const item = draft.lists[sourceListIndex].tasks[dragIndex]
+
+      // Remove task from source list
+      draft.lists[sourceListIndex].tasks.splice(dragIndex, 1)
+      // Add task to target list
+      draft.lists[targetListIndex].tasks.splice(hoverIndex, 0, item)
+
+      break
+    }
     case "SET_DRAGGED_ITEM": {
       draft.draggedItem = action.payload
       break
