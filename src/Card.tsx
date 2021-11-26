@@ -5,7 +5,7 @@ import { CardContainer } from "./styles"
 import { useItemDrag } from "./utils/useItemDrag"
 import { useAppState } from "./state/AppStateContext"
 import { isHidden } from "./utils/isHidden"
-import { moveTask, setDraggedItem } from "./state/actions"
+import { moveTask } from "./state/actions"
 
 type CardProps = {
   text: string
@@ -22,13 +22,6 @@ export const Card = ({
 }: CardProps) => {
   const { draggedItem, dispatch } = useAppState()
   const ref = useRef<HTMLDivElement>(null)
-
-  const { drag } = useItemDrag({
-    type: "CARD",
-    id,
-    text,
-    columnId
-  })
   const [, drop] = useDrop({
     accept: "CARD",
     hover() {
@@ -44,6 +37,12 @@ export const Card = ({
 
       dispatch(moveTask(draggedItem.id, id, draggedItem.columnId, columnId))
     }
+  })
+  const { drag } = useItemDrag({
+    type: "CARD",
+    id,
+    text,
+    columnId
   })
 
   drag(drop(ref))
